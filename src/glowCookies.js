@@ -264,7 +264,7 @@ class GlowCookies {
 
   savePreferences(){
     this.Customizer.style.display = "none";
-    let isSessionOnly = 0;
+    // let isSessionOnly = 0;
     for(let switch_num = 0; switch_num < this.cookiesAllowed.length; switch_num++){
       if(this.switch_on[switch_num] == "glowCookies__customize_switch_button_off"){
         this.cookiesAllowed[switch_num] = false;
@@ -283,11 +283,20 @@ class GlowCookies {
           }
         }else{
           // if we are on switch 4 it must be session onl
-          isSessionOnly = 1
+          // isSessionOnly = 1
+          this.activateSessionCookies('true');
         }
         this.cookiesAllowed[switch_num] = true;
       }
     }
+    if (this.switch_on[3] === 'glowCookies__customize_switch_button_off') {
+      // isSessionOnly = 0
+      this.activateSessionCookies('false');
+    } else {
+      // isSessionOnly = 1
+      this.activateSessionCookies('true');
+    }
+
     this.PreBanner.style.display = this.config.hideAfterClick ? "none" : "block"
   }
 
@@ -338,14 +347,13 @@ class GlowCookies {
       let eqPos = cookie.indexOf('=');
       let name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
       let value = eqPos > -1 ? cookie.substr(eqPos + 1) : null;
-      if (isSessionOnly) {
+      if (isSessionOnly === 'true') {
         // makes it a session cookie
         document.cookie = `${name}=${value}; path=/`;
       } else {
-        // set cookie with 8-hour expiration
-        // need to change to the custom retention period
+        // changed to the custom retention period if it exists
         const date = new Date();
-        date.setTime(date.getTime() + (8 * 60 * 60 * 1000)); // 8 hours
+        date.setTime(date.getTime() + ((this.tracking.retentionPeriod || 1)  * 24 * 60 * 60 * 1000)); // 8 hours
         let expires = "expires=" + date.toUTCString();
         document.cookie = `${name}=${value}; ${expires}; path=/`;
       }
@@ -452,7 +460,7 @@ class GlowCookies {
       const date = new Date();
       date.setTime(date.getTime() + (daystoLive * 24* 60 * 60 *1000));
       // date.setTime(date.getTime() + (daystoLive *1000));
-      
+
       while (d.length > 0) {
         let cookieBase = encodeURIComponent(cookies[c].split(";")[0].split("=")[0]) + `=; expires=${date.toUTCString()}; domain=` + d.join('.') + ' ;path=';
         let p = location.pathname.split('/');

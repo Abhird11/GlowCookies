@@ -1,10 +1,31 @@
 const firstText = document.querySelector("#firstText");
-const submitBtn = document.querySelector("#submitBtn");
+const submitBtnExpiring = document.querySelector("#submitBtnExpiring");
+const submitBtnSession = document.querySelector("#submitBtnSession");
 
-submitBtn.addEventListener("click", () => {
+submitBtnExpiring.addEventListener("click", () => {
     setCookie(firstText.value, firstText.value, 365);
-    addCookieDirectlyForTest(firstText.value, firstText.value, 365);
+    addExpiringCookieDirectlyForTest(firstText.value, firstText.value, 365);
 });
+
+submitBtnSession.addEventListener("click", () => {
+    setCookie(firstText.value, firstText.value, 365);
+    addSessionCookieDirectlyForTest(firstText.value, firstText.value, 365);
+});
+
+// Example to force expiry addition
+function addExpiringCookieDirectlyForTest(name, value, days) {
+    let expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + days);
+    let cookieString = `${name}=${value}; expires=${expiryDate.toUTCString()}; path=/`;
+    document.cookie = cookieString;
+}
+
+function addSessionCookieDirectlyForTest(name, value, days) {
+    let expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + days);
+    let cookieString = `${name}=${value}; path=/`;
+    document.cookie = cookieString;
+}
 
 function setCookie(name, value, daysToLive) {
     const isSessionOnly = sessionStorage.getItem('isSessionOnly') === 'true';
@@ -16,14 +37,6 @@ function setCookie(name, value, daysToLive) {
         expires = "expires=" + date.toUTCString();
     }
     document.cookie = `${name}=${value}; ${expires}; path=/`;
-}
-
-// Example to force expiry addition
-function addCookieDirectlyForTest(name, value, days) {
-    let expiryDate = new Date();
-    expiryDate.setDate(expiryDate.getDate() + days);
-    let cookieString = `${name}=${value}; expires=${expiryDate.toUTCString()}; path=/`;
-    document.cookie = cookieString;
 }
 
 function deleteCookie(name){

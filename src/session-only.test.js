@@ -69,7 +69,7 @@ describe('Session-Only Tests', function() {
         assert.strictEqual(sessionOnlyTrue, false, 'Cookies should be session-only after toggle');
     });
 
-    it('after toggling to session-only, the cookie expiry should be present', async function() {
+    it('after toggling from session-only, the cookie expiry should be present', async function() {
         const fileUrl = 'http://localhost:8001/index.html'; // Adjust as needed (port) (file name)
         await driver.get(fileUrl);
 
